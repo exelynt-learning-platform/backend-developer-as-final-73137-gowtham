@@ -1,0 +1,12 @@
+package com.exelynt.resource_booking.repository;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+
+import com.exelynt.resource_booking.entity.Reservation;
+
+public interface ReservationRepository
+        extends JpaRepository<Reservation, Long>,
+                JpaSpecificationExecutor<Reservation> {
+
+}
