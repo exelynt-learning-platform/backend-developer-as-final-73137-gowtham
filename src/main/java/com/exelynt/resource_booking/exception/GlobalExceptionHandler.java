@@ -7,6 +7,7 @@ import java.util.Map;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -18,17 +19,13 @@ public class GlobalExceptionHandler {
     // VALIDATION ERROR - 400
     // =========================
 
-    @ExceptionHandler(
-            MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String, Object>>
-    handleValidationException(
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<Map<String, Object>> handleValidationException(
             MethodArgumentNotValidException exception) {
 
-        Map<String, Object> response =
-                new HashMap<>();
+        Map<String, Object> response = new HashMap<>();
 
-        Map<String, String> errors =
-                new HashMap<>();
+        Map<String, String> errors = new HashMap<>();
 
         exception.getBindingResult()
                 .getFieldErrors()
@@ -68,10 +65,8 @@ public class GlobalExceptionHandler {
     // BAD REQUEST - 400
     // =========================
 
-    @ExceptionHandler(
-            IllegalArgumentException.class)
-    public ResponseEntity<Map<String, Object>>
-    handleBadRequest(
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<Map<String, Object>> handleBadRequest(
             IllegalArgumentException exception) {
 
         return createResponse(
@@ -84,10 +79,8 @@ public class GlobalExceptionHandler {
     // ACCESS DENIED - 403
     // =========================
 
-    @ExceptionHandler(
-            AccessDeniedException.class)
-    public ResponseEntity<Map<String, Object>>
-    handleAccessDenied(
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<Map<String, Object>> handleAccessDenied(
             AccessDeniedException exception) {
 
         return createResponse(
@@ -97,13 +90,25 @@ public class GlobalExceptionHandler {
     }
 
     // =========================
+    // INVALID LOGIN - 401
+    // =========================
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<Map<String, Object>> handleBadCredentials(
+            BadCredentialsException exception) {
+
+        return createResponse(
+                HttpStatus.UNAUTHORIZED,
+                "Invalid username or password"
+        );
+    }
+
+    // =========================
     // NOT FOUND - 404
     // =========================
 
-    @ExceptionHandler(
-            RuntimeException.class)
-    public ResponseEntity<Map<String, Object>>
-    handleRuntimeException(
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<Map<String, Object>> handleRuntimeException(
             RuntimeException exception) {
 
         return createResponse(
@@ -116,13 +121,11 @@ public class GlobalExceptionHandler {
     // RESPONSE BUILDER
     // =========================
 
-    private ResponseEntity<Map<String, Object>>
-    createResponse(
+    private ResponseEntity<Map<String, Object>> createResponse(
             HttpStatus status,
             String message) {
 
-        Map<String, Object> response =
-                new HashMap<>();
+        Map<String, Object> response = new HashMap<>();
 
         response.put(
                 "timestamp",

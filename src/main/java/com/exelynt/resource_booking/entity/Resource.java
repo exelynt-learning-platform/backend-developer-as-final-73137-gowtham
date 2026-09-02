@@ -1,9 +1,12 @@
 package com.exelynt.resource_booking.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import jakarta.persistence.*;
 
 @Entity
 @Table(name = "resources")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Resource {
 
     @Id
